@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class manager : MonoBehaviour
 {
     public int cameraRotate;   //true = X軸、false = Z軸
 	public int operate; //操作回数
+
+    public int ClearNum;  //クリアまでの数
+
+    FadeIntest fade;
 
     public enum Wall
     {
@@ -34,7 +39,7 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         
         cameraRotate = 0;
         nowTop = (int)Wall.Top;
-
+        
 		operate = 440;
         audioSource = GetComponent<AudioSource>();
     }
@@ -42,7 +47,7 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public void SetTop(int ChangeTop,bool rollWay)
     {
@@ -189,4 +194,10 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         audioSource.PlayOneShot(tmp);
         Debug.Log("ＳＥ発生");
     }
+
+    public void clear(int point)
+    {
+        ClearNum = ClearNum + point;
+    }
+
 }

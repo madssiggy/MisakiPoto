@@ -108,8 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94ef0beb0114d9f45be7218efddf084e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BigExplosion: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
-    type: 3}
+  Effect: {fileID: 5938736681027265904, guid: e89af055a6339f04bac077a076098d4b, type: 3}
   sound1: {fileID: 8300000, guid: 52606f42ff5ce134bb391d3c23f66f7e, type: 3}
   sound2: {fileID: 8300000, guid: e2ccf6ef0027b3241bd6d160920c30b3, type: 3}
 --- !u!54 &4414595522624285987

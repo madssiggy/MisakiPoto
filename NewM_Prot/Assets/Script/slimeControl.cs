@@ -10,10 +10,12 @@ public class slimeControl : MonoBehaviour
     field F_script;
     bool isMove;
 
-    public GameObject BigExplosion;
+    public GameObject Effect;
     //SE用変数
     public AudioClip sound1;
     public AudioClip sound2;
+
+    
 
     // Start is called before the first frame update
     void Awake()
@@ -73,32 +75,35 @@ public class slimeControl : MonoBehaviour
                     script.PlaySE(sound1);
                     Destroy(this.gameObject);
                     FindObjectOfType<Score>().AddPoint(10);
+                    script.clear(-1);
    
                     break;
                 case "MiddleSlime":
-  
+
                     script.CreateSlime((int)manager.SlimeSize.middle, this.gameObject);
                     FindObjectOfType<Score>().AddPoint(10);
-                    
+                    script.clear(-1);
+
                     break;
                 case "SmallSlime:":
-                 
+
                     script.CreateSlime((int)manager.SlimeSize.small, this.gameObject);
                     FindObjectOfType<Score>().AddPoint(10);
-                   
+                    script.clear(-1);
+
                     break;
                 default:
                     break;
             }
-
-            foreach(ContactPoint contactPoint in collision.contacts)
+           
+            foreach (ContactPoint contactPoint in collision.contacts)
             {
 
-                GameObject effect = (GameObject)Instantiate(BigExplosion, (Vector3)contactPoint.point, Quaternion.identity);
-
-                Destroy(effect, 1.5f);
+                GameObject effect = (GameObject)Instantiate(Effect, (Vector3)contactPoint.point, Quaternion.identity);
+                
+                Destroy(effect, 0.5f);
             }
-
+            
         }
     }
  
