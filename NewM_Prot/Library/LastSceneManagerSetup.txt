@@ -1,5 +1,9 @@
 sceneSetups:
+<<<<<<< HEAD
 - path: Assets/Scenes/kameyama/1.unity
+=======
+- path: Assets/Scenes/MENU Scene.unity
+>>>>>>> 77ba65d34bd6be3072d442ec90b19c6418426328
   isLoaded: 1
   isActive: 1
   isSubScene: 0
