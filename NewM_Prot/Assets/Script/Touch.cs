@@ -61,7 +61,7 @@ public class Touch : MonoBehaviour
                         Debug.Log("爆発");
 
                         // 処理内容はslimeControl.csのBigSlimeClickAct()の中
-                        hit.collider.gameObject.GetComponent<slimeControl>().SlimeDestroy();
+                        hit.collider.gameObject.GetComponent<slimeControl>().SlimeDestroy(new Vector3(0,0,0));
                     }
                     //　小、中スライムにRayがぶつかった時
                     else if (hit.collider.gameObject.CompareTag("MiddleSlime") ||

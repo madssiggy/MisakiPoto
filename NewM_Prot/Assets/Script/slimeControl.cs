@@ -36,13 +36,20 @@ public class slimeControl : MonoBehaviour
         Mathf.Ceil(transform.rotation.x);
         Mathf.Ceil(transform.rotation.y);
         Mathf.Ceil(transform.rotation.z);
+
+        script.CheckSlime();
+        script.slimenum++;
     }
    
     //スライムをぶっこわす
-    public void SlimeDestroy()
+    public void SlimeDestroy(Vector3 MoveWay)
     {
-        
+        script.slimenum--;
+        script.CheckSlime();
+        StartCoroutine(SlimeMove(MoveWay));
         Destroy(gameObject.transform.parent.gameObject);
+
+     
     }
     // Update is called once per frame
     void Update()
@@ -71,7 +78,15 @@ public class slimeControl : MonoBehaviour
         }
         
     }
-
+    IEnumerator SlimeMove(Vector3 Move)
+    { int time = 0;
+        do {
+            gameObject.transform.position += Move;
+            time++;
+            yield return null;
+        } while (time == 10);
+        yield break;
+    }
     //private void OnCollisionEnter(Collision collision)
     //{
     //    if (collision.gameObject.tag == this.gameObject.tag)
@@ -191,9 +206,12 @@ public class slimeControl : MonoBehaviour
    //     gameObject.transform.position += Way/10f;
 
    // }
-   IEnumerator Fusion()
-    {
+   //IEnumerator Fusion()
+   // {
+   //     do {
 
-        yield break;
-    }
+   //         yield return null;
+   //     } while (1);
+   //     yield break;
+   // }
     }

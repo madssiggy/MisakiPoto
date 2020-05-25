@@ -34,9 +34,16 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
     //スライムＳＥ用
     AudioSource audioSource;
 
+
+    GameObject[] big ;
+    GameObject[] mid;
+    GameObject[] small;
+  public  int virusnum;
+    public int slimenum;
     // Start is called before the first frame update
     void Start()
     {
+       
         DisappearSlimeNum = new int[2];
         for(int i=0;i<2;i++)
         DisappearSlimeNum[i] = 0;
@@ -46,6 +53,12 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         
 		operate = 440;
         audioSource = GetComponent<AudioSource>();
+
+        big = GameObject.FindGameObjectsWithTag("BigSlime");
+        mid = GameObject.FindGameObjectsWithTag("MiddleSlime");
+        small = GameObject.FindGameObjectsWithTag("SmallSlime");
+        virusnum = ((big.Length) + (mid.Length) + (small.Length)) ;
+        Debug.Log("virusnum=" + virusnum);
     }
 
     // Update is called once per frame
@@ -55,7 +68,15 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         {
            fadeStart();
         }
+        if (Input.GetKeyDown(KeyCode.Return)) {
+            CheckSlime();
+        }
+        if (slimenum == 0) {
+            SceneManager.LoadScene("SELECT STAGE");
+        }
     }
+  
+
     public void SetTop(int ChangeTop,bool rollWay)
     {
         switch (rollWay)
@@ -237,4 +258,18 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         });
     }
 
+
+   public  void CheckSlime()
+    {
+        big = GameObject.FindGameObjectsWithTag("BigSlime");
+        mid = GameObject.FindGameObjectsWithTag("MiddleSlime");
+        small = GameObject.FindGameObjectsWithTag("SmallSlime");
+        virusnum = ((big.Length) + (mid.Length) + (small.Length));
+        Debug.Log("virusnum=" + virusnum);
+        if (virusnum ==0) {
+            Debug.Log("スライムがなくなったぞ。今だセーラムーん" + virusnum);
+            SceneManager.LoadScene("SELECT STAGE");
+            //  Debug.Log(tagname + "タグがついたオブジェクトはありません");
+        }
+    }
 }
