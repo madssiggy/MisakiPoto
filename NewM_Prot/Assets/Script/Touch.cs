@@ -1,23 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TouchStateManager;
-
 
 public class Touch : MonoBehaviour
 {
-    StateManager m_TouchManager;
+    // タッチ状態管理Managerの読み込み
+    [SerializeField] GameObject TouchStateManagerObj;
+    TouchStateManager TouchStateManagerScript;
+
     public LayerMask mask;          // 特定レイヤーのみ判定衝突を行うようにするためのマスク、Unity上で設定（TouchManagerインスペクタ内）
-    private GameObject startObj;            // タッチ始点にあるオブジェクトを格納
-     private GameObject endObj;              // タッチ終点にあるオブジェクトを格納
-    List<GameObject> removableSlimeList = new List<GameObject>();    // 削除するスライムのリスト
-    public string currentName;       // タグ判定用のstring変数
+    private GameObject startObj;    // タッチ始点にあるオブジェクトを格納
+    private GameObject endObj;      // タッチ終点にあるオブジェクトを格納
+    public string currentName;      // タグ判定用のstring変数
+
+    // 削除するスライムのリスト
+    List<GameObject> removableSlimeList = new List<GameObject>();
 
     public float MaxDistance;
 
     //マネージャー読み込み======
     public GameObject managerObj;
     manager managerScript;
+
     //=======================亀山
 
     //=========================
@@ -25,8 +29,10 @@ public class Touch : MonoBehaviour
     //=========================
     void Start()
     {
-        // タッチ管理マネージャ生成
-        this.m_TouchManager = new StateManager();
+        //タッチ状態管理Managerの取得
+        TouchStateManagerObj = GameObject.Find("TouchStateManager");
+        TouchStateManagerScript = TouchStateManagerObj.GetComponent<TouchStateManager>();
+
         managerObj = GameObject.Find("StageManager");
         managerScript = managerObj.GetComponent<manager>();
      
@@ -37,14 +43,8 @@ public class Touch : MonoBehaviour
     //=========================
     void Update()
     {
-        // タッチ状態更新
-        this.m_TouchManager.update();
-
-        // タッチ状態の取得
-        StateManager TouchState = this.m_TouchManager.GetTouch();
-
         // タッチされている時
-        if (managerScript.isRotate==false&&TouchState.IsTouch)
+        if (managerScript.isRotate == false && TouchStateManagerScript.GetTouch())
         {
             Debug.Log("タッチ開始");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -84,7 +84,7 @@ public class Touch : MonoBehaviour
                 }
             }
             //タッチ終了時
-            else if(TouchState.Phase == TouchPhase.Ended)
+            else if(TouchStateManagerScript.GetTouchPhase() == TouchPhase.Ended)
             {
                 int remove_cnt = removableSlimeList.Count;
 
@@ -100,8 +100,8 @@ public class Touch : MonoBehaviour
                                     new Vector3
                                     (
                                        (int)(startObj.transform.position.x + endObj.transform.position.x) / 2,
-                                    (int)(startObj.transform.position.y + endObj.transform.position.y) / 2,
-                                    (int)(startObj.transform.position.z + endObj.transform.position.z) / 2
+                                       (int)(startObj.transform.position.y + endObj.transform.position.y) / 2,
+                                       (int)(startObj.transform.position.z + endObj.transform.position.z) / 2
                                      ),
                                       Quaternion.Euler(CreateSlimeQuarternion()));
                         //生成したプレハブをFieldCenterに登録する。
@@ -116,8 +116,8 @@ public class Touch : MonoBehaviour
                        GameObject tmp= Instantiate(obj,
                                     new Vector3
                                     (
-                                      (int)   (startObj.transform.position.x + endObj.transform.position.x) / 2,
-                                       (int) (startObj.transform.position.y + endObj.transform.position.y) / 2,
+                                       (int)(startObj.transform.position.x + endObj.transform.position.x) / 2,
+                                       (int)(startObj.transform.position.y + endObj.transform.position.y) / 2,
                                        (int)(startObj.transform.position.z + endObj.transform.position.z) / 2
                                      ),
                                       Quaternion.Euler(CreateSlimeQuarternion()));
@@ -144,15 +144,15 @@ public class Touch : MonoBehaviour
                     }
                 }
 
-                // リスト内のスライムを消す
+                // リスト内のバイキンを消す
                 currentName = null;
                 startObj = null;
                 endObj = null;
             }
             // タッチ中
-            else if(TouchState.Phase == TouchPhase.Moved && startObj != null)
+            else if(TouchStateManagerScript.GetTouchPhase() == TouchPhase.Moved && startObj != null)
             {
-                // Rayが特定レイヤの物体（スライム）に衝突している場合
+                // Rayが特定レイヤの物体（バイキン）に衝突している場合
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
                 {
                     if (hit.collider != null)
@@ -189,28 +189,17 @@ public class Touch : MonoBehaviour
             
         }
     }
-    //=============================================
-    //　オブジェクトの色を変える
-    //=============================================
-    void ChangeColor(GameObject obj, float Alpha)
-    {
-        // SpriteRendererコンポーネントを取得
-        //SpriteRenderer SlimeTexture = obj.GetComponent<SpriteRenderer>();
-
-        // Colorプロパティのうち、透明度のみ変更(色の透明度をAlpha%に変更)
-        //SlimeTexture.color = new Color(SlimeTexture.color.r, SlimeTexture.color.g, SlimeTexture.color.b, Alpha);
-    }
 
     //==============================================================
-    //　選択されているスライムを除去リストに格納し、色を半透明にする
+    //　選択されているバイキンを除去リストに格納する
     //==============================================================
     void PushToList(GameObject obj)
     {
         // 除去リストに選択しているオブジェクトを追加
         removableSlimeList.Add(obj);
+
+        // どのオブジェクトが除去リスト入りしているかわかりやすいように名前に_をつけたす
         obj.name = "_" + obj.name;
-        // 色の透明度を50%に変更
-        //ChangeColor(obj, 0.5f);
     }
 
     /*==================================================

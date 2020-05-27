@@ -2,95 +2,90 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TouchStateManager
+public class TouchStateManager : MonoBehaviour
 {
-    public class StateManager
+    public bool       IsTouch;                    // タッチしているかどうかのフラグ
+    public Vector2    TouchPos;                   // タッチしている座標
+    public TouchPhase Phase;                      // タッチの状態（開始、最中、終了）
+
+    //==============================
+    // 初期化処理
+    //==============================
+    void Start()
     {
-        public bool       IsTouch;                    // タッチしているかどうかのフラグ
-        public Vector2    TouchPos;                   // タッチしている座標
-        public TouchPhase Phase;                      // タッチの状態（開始、最中、終了）
+        this.IsTouch = false;
+        this.TouchPos = new Vector2(0, 0);
+        this.Phase = TouchPhase.Began;
+    }
 
-        //==============================
-        // 初期化処理（コンストラクタ）
-        //==============================
-        // @param bool flag タッチ有無
-        // @param Vector2 position タッチ座標(引数の省略が行えるようにNull許容型に)
-        // @param Touchphase phase タッチ状態
-        public StateManager(bool flag = false, Vector2 ? position = null, TouchPhase phase = TouchPhase.Began)
+    //=========================
+    // 更新処理
+    //=========================
+    void Update()
+    { 
+        this.IsTouch = false;
+
+        // マウス操作（エディタ上）
+        if (Application.isEditor)
         {
-            this.IsTouch = flag;
+            // 押した瞬間
+            if (Input.GetMouseButtonDown(0))
+            {                    
+                this.IsTouch = true;
+                this.Phase = TouchPhase.Began;
+                Debug.Log("押した瞬間");
+            }
+            // 離した瞬間
+            else if (Input.GetMouseButtonUp(0))
+            {
+                this.IsTouch = true;
+                this.Phase = TouchPhase.Ended;
+                Debug.Log("離した瞬間");
+            }
+            // 押しっぱなし
+            else if (Input.GetMouseButton(0))
+            {
+                this.IsTouch = true;
+                this.Phase = TouchPhase.Moved;
+                Debug.Log("押しっぱなし");
+            }
 
-            if (position == null)
+            // 座標取得
+            if (this.IsTouch)
             {
-                this.TouchPos = new Vector2(0, 0);
+                this.TouchPos = Input.mousePosition;
             }
-            else
-            {
-                this.TouchPos = (Vector2)position;
-            }
-            this.Phase = phase;
+
         }
-
-        //=========================
-        // 更新処理
-        //=========================
-        public void update()
+        // 実機（スマホ）使用時
+        else
         {
-            this.IsTouch = false;
-
-            // マウス操作（エディタ上）
-            if (Application.isEditor)
+            if (Input.touchCount > 0)
             {
-                // 押した瞬間
-                if (Input.GetMouseButtonDown(0))
-                {                    
-                    this.IsTouch = true;
-                    this.Phase = TouchPhase.Began;
-                    Debug.Log("押した瞬間");
-                }
-                // 離した瞬間
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    this.IsTouch = true;
-                    this.Phase = TouchPhase.Ended;
-                    Debug.Log("離した瞬間");
-                }
-                // 押しっぱなし
-                else if (Input.GetMouseButton(0))
-                {
-                    this.IsTouch = true;
-                    this.Phase = TouchPhase.Moved;
-                    Debug.Log("押しっぱなし");
-                }
+                UnityEngine.Touch touch = Input.GetTouch(0);
 
-                // 座標取得
-                if (this.IsTouch)
-                {
-                    this.TouchPos = Input.mousePosition;
-                }
-
+                this.TouchPos = touch.position;
+                this.Phase = touch.phase;
+                this.IsTouch = true;
             }
-            // 実機（スマホ）使用時
-            else
-            {
-                if (Input.touchCount > 0)
-                {
-                    UnityEngine.Touch touch = Input.GetTouch(0);
-
-                    this.TouchPos = touch.position;
-                    this.Phase = touch.phase;
-                    this.IsTouch = true;
-                }
-            }
-        }
-
-        //=========================
-        // タッチ情報の取得
-        //=========================
-        public StateManager GetTouch()
-        {
-            return new StateManager(this.IsTouch, this.TouchPos, this.Phase);
         }
     }
+
+    //=========================
+    // タッチ情報の取得
+    //=========================
+    public bool GetTouch()
+    {
+        return this.IsTouch;
+    }
+    public Vector2 GetTouchPos()
+    {
+        return this.TouchPos;
+    }
+    public TouchPhase GetTouchPhase()
+    {
+        return this.Phase;
+    }
+
 }
 

@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class manager : MonoBehaviour
 {
+    // シーン管理マネージャを取得するようの変数====================2020/5/27美咲追加
+    GameObject SceneNavigatorObj;
+    SceneNavigator script;
+    //===============================================
     public int cameraRotate;   //true = X軸、false = Z軸
 	public int operate; //操作回数
 
@@ -12,8 +16,6 @@ public class manager : MonoBehaviour
     public bool isCamera = false;
 
     public int ClearNum;  //クリアまでの数
-
-    public Fade fade;       //FadeCanvas取得
 
     public AudioClip SE;
     public enum Wall
@@ -34,7 +36,6 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
     //スライムＳＥ用
     AudioSource audioSource;
 
-
     GameObject[] big ;
     GameObject[] mid;
     GameObject[] small;
@@ -43,22 +44,24 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
     // Start is called before the first frame update
     void Start()
     {
-       
+        //シーン管理マネージャの取得 ==================== 2020 / 5 / 27美咲追加
+        SceneNavigatorObj = GameObject.Find("SceneNavigator");
+        script = SceneNavigatorObj.GetComponent<SceneNavigator>();
+        //==============================================================
         DisappearSlimeNum = new int[2];
         for(int i=0;i<2;i++)
         DisappearSlimeNum[i] = 0;
         
         cameraRotate = 0;
         nowTop = (int)Wall.Top;
-        
-		operate = 440;
+
         audioSource = GetComponent<AudioSource>();
 
         big = GameObject.FindGameObjectsWithTag("BigSlime");
         mid = GameObject.FindGameObjectsWithTag("MiddleSlime");
         small = GameObject.FindGameObjectsWithTag("SmallSlime");
         virusnum = ((big.Length) + (mid.Length) + (small.Length)) ;
-        Debug.Log("virusnum=" + virusnum);
+        //Debug.Log("virusnum=" + virusnum);
     }
 
     // Update is called once per frame
@@ -66,13 +69,18 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
     {
       if(ClearNum == 2)
         {
-           fadeStart();
+           //美咲「フェード系はすべてSceneNavigatorを通すように。ってかClearNum==2で何が起こるんや」
+           //fadeStart();
         }
-        if (Input.GetKeyDown(KeyCode.Return)) {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
             CheckSlime();
         }
-        if (slimenum == 0) {
-            SceneManager.LoadScene("SELECT STAGE");
+        if (slimenum == 0)
+        {
+            //美咲「スライム全消し時はクリア処理が入るはずなので、クリア処理ができ次第
+            //      SceneNavigatorから遷移させてくれ」
+            //SceneManager.LoadScene("SELECT STAGE");
         }
     }
   
@@ -178,42 +186,6 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
 		}
 	}
 
-	public void CreateSlime(int slimeType,GameObject DisappearSlime)
-    {
-        Vector3 tmp = DisappearSlime.transform.position;   //生成位置（＝変更前の位置)取得
-    //    GameObject OYA = transform.parent.gameObject;       //親クラス取得
-      //  Destroy(this.gameObject);                           //中スライムを消す
-                                                            //      FindObjectOfType<Score>().AddPoint(10);
-        string prefName = "Prefab/Empty";
-       
-        Destroy(DisappearSlime);
-        DisappearSlimeNum[slimeType]+=1;
-
-        if (DisappearSlimeNum[slimeType] == 2) {
-            //プレハブを取得
-            switch (slimeType) {
-                case (int)SlimeSize.small:
-                    prefName = "Prefab/MiddleSlime";
-                    break;
-                case (int)SlimeSize.middle:
-
-                    prefName = "Prefab/BigSlime";
-                    break;
-                default:
-                    break;
-
-            }
-
-            DisappearSlimeNum[slimeType] = 0;
-        }
-
-        GameObject TMP = (GameObject)Instantiate((GameObject)Resources.Load(prefName), DisappearSlime.transform.position, Quaternion.identity);
-        TMP.transform.parent = GameObject.Find("FieldCenter").transform;
-
-    }//slimeType,true=small,false=Middle
-
-
-   
 
     public void operations(int point)
 	{
@@ -237,36 +209,15 @@ public static int[] DisappearSlimeNum;//スライムを消して生む動き用
         ClearNum = ClearNum + Cpoint;
     }
 
-    public void fadeStart()
-    {
-        //アニメーションを掛けてシーン遷移する
-        fade.FadeIn(1.0f, () =>
-        {
-            if (SceneManager.GetActiveScene().name == "EASY+")
-            { // EASY+シーンでのみやりたい処理
-                SceneManager.LoadScene("EASY");
-            }
-            else if(SceneManager.GetActiveScene().name=="EASY")
-            { // EASYシーンでのみやりたい処理
-                SceneManager.LoadScene("HARD");
-            }
-            else if(SceneManager.GetActiveScene().name == "TITLE")
-            {
-                // EASY+シーンでのみやりたい処理
-                SceneManager.LoadScene("SELECT STAGE");
-            }
-        });
-    }
-
-
    public  void CheckSlime()
     {
         big = GameObject.FindGameObjectsWithTag("BigSlime");
         mid = GameObject.FindGameObjectsWithTag("MiddleSlime");
         small = GameObject.FindGameObjectsWithTag("SmallSlime");
         virusnum = ((big.Length) + (mid.Length) + (small.Length));
-        Debug.Log("virusnum=" + virusnum);
-        if (virusnum ==0) {
+        //Debug.Log("virusnum=" + virusnum);
+        if (virusnum ==0)
+        {
             Debug.Log("スライムがなくなったぞ。今だセーラムーん" + virusnum);
             SceneManager.LoadScene("SELECT STAGE");
             //  Debug.Log(tagname + "タグがついたオブジェクトはありません");
