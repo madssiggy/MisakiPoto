@@ -5,38 +5,41 @@ using UnityEngine.UI;
 
 public class TextAlphaChange : MonoBehaviour
 {
-    public Text text;
-    float Alpha;
-    bool Flag;  // trueの時アルファ値を下げ、falseの時にアルファ値を上げる
+    public bool Flag;
+    public float Alpha;
+    private float red;
+    private float green;
+    private float blue;
 
-    // Use this for initialization
     void Start()
     {
-        Alpha = 0;
+        // 色情報の取得
+        red = GetComponent<Image>().color.r;
+        green = GetComponent<Image>().color.g;
+        blue = GetComponent<Image>().color.b;
+        Alpha = GetComponent<Image>().color.a;
+
+        Flag = true;    
     }
-    // Update is called once per frame
     void Update()
     {
-        //テキストの透明度を変更する
-        text.color = new Color(0.5f, 0.78f, 0.78f, Alpha);
+        GetComponent<Image>().color = new Color(red, green, blue, Alpha);
 
         if (Flag)
         {
-            Alpha -= Time.deltaTime;
+            Alpha -= 0.01f;
+            if(Alpha <= 0.3f)
+            {
+                Flag = false;
+            }
         }
-        else
+        else if(!Flag)
         {
-            Alpha += Time.deltaTime;
-        }
-        if (Alpha < 0)
-        {
-            Alpha = 0;
-            Flag = false;
-        }
-        else if (Alpha > 1)
-        {
-            Alpha = 1;
-            Flag = true;
+            Alpha += 0.01f;
+            if (Alpha >= 1.0f)
+            {
+                Flag = true;
+            }
         }
     }
 }

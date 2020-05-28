@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using TouchStateManager;
 
 public class TouchEffect : MonoBehaviour
 {
@@ -12,18 +11,19 @@ public class TouchEffect : MonoBehaviour
     private ParticleSystem m_ClickParticleSystem = default;
     private ParticleSystem m_DragParticleSystem = default;
 
-    private StateManager m_TouchManager;
+    // タッチ状態管理Managerの読み込み
+    [SerializeField] GameObject TouchStateManagerObj;
+    public TouchStateManager TouchStateManagerScript;
 
     private bool DragFlag;     // ドラッグしはじめのときにtrueにする（連続でParticle.Play()させないため）
+    bool touch;
 
     // Use this for initialization
     void Start()
     {
         // フラグの初期化
         DragFlag = false;
-
-        // タッチ管理マネージャ生成
-        this.m_TouchManager = new StateManager();
+        touch = false;
 
         // パーティクルを生成
         m_ClickParticle = (GameObject)Instantiate(CLICK_PARTICLE);
@@ -36,37 +36,38 @@ public class TouchEffect : MonoBehaviour
         // 再生を止める（万が一急に再生されないように）
         m_ClickParticleSystem.Stop();
         m_DragParticleSystem.Stop();
+
+        //タッチ状態管理Managerの取得
+        TouchStateManagerObj = GameObject.Find("TouchStateManager");
+        TouchStateManagerScript = TouchStateManagerObj.GetComponent<TouchStateManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // タッチ状態更新
-        this.m_TouchManager.update();
-
-        // タッチ状態の取得
-        StateManager TouchState = this.m_TouchManager.GetTouch();
-
         // パーティクルをマウスカーソルに追従させる
         Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = 30.0f;  // Canvasより手前に移動させる
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        
+        touch = TouchStateManagerScript.GetTouch();
+
         if (m_DragParticle != null)
         {
             m_DragParticle.transform.position = new Vector3(mousePosition.x, mousePosition.y, mousePosition.z);
         }
         //タッチされていたら
-        if (TouchState.IsTouch)
+        if (touch)
         {
             // タッチ開始時
-            if (TouchState.Phase == TouchPhase.Began)
+            if (TouchStateManagerScript.GetTouchPhase() == TouchPhase.Began)
             {
                 Debug.Log("★を出すよ");
                 m_ClickParticle.transform.position = mousePosition;
                 m_ClickParticleSystem.Play();   // １回再生(ParticleSystemのLoopingにチェックを入れていないため)
             }
             // タッチ終了
-            else if (TouchState.Phase == TouchPhase.Ended)
+            else if (TouchStateManagerScript.GetTouchPhase() == TouchPhase.Ended)
             {
                 Debug.Log("タッチエフェクト停止");
                 // Particleの放出を停止する
@@ -76,7 +77,7 @@ public class TouchEffect : MonoBehaviour
                 DragFlag = false;
             }
             // タッチ中
-            else if(TouchState.Phase == TouchPhase.Moved)
+            else if(TouchStateManagerScript.GetTouchPhase() == TouchPhase.Moved)
             {
                 if (!DragFlag)
                 {

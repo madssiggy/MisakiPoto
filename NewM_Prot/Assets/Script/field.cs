@@ -16,16 +16,16 @@ public class field : MonoBehaviour
     GameObject Center;          // カメラやフィールドの回転の中心軸（の位置）
     GameObject StageManager;    // 各値が入ってるマネージャーを呼び出す
     manager script;             // マネージャーのスクリプト
-	bool isRotate = false;               //回転中に立つフラグ。回転中は入力を受け付けない
+	//bool isRotate = false;               //回転中に立つフラグ。回転中は入力を受け付けない
 	float cubeAngle = 0.0f;
 
     Bottun BottunScriptL;
     Bottun BottunScriptR;
 
 
-    [SerializeField, PersistentAmongPlayMode] public int AppearSlimeCount;  //生成するスライム数
+    [SerializeField] public int AppearSlimeCount;  //生成するスライム数
 
-    [SerializeField, PersistentAmongPlayMode] public Vector3 SpawnSlimePos; //スライムごとの位置
+    [SerializeField] public Vector3 SpawnSlimePos; //スライムごとの位置
 
     // Start is called before the first frame update
     void Start()
@@ -74,28 +74,28 @@ public class field : MonoBehaviour
 			// 移動量
 			//float ToRotate = 0.0f;//Input.GetAxis("Mouse X");
 
-			//==========================
-			//　Z軸で左にステージが90度傾く
-			//==========================
-			if (Input.GetKeyDown(KeyCode.RightArrow) && script.isCamera == false && script.isRotate == false)
-			{
-				//trueで左回転
-				script.SetTop(script.nowTop, true);
-				StartCoroutine(MoveL());
-				script.operations(-1);
+			////==========================
+			////　Z軸で左にステージが90度傾く
+			////==========================
+			//if (Input.GetKeyDown(KeyCode.RightArrow) && script.isCamera == false && script.isRotate == false)
+			//{
+			//	//trueで左回転
+			//	script.SetTop(script.nowTop, true);
+			//	StartCoroutine(MoveL());
+			//	script.operations(-1);
 
-			}
+			//}
 
-			//==========================
-			//　Z軸で右にステージが90度傾く
-			//==========================
-			if (Input.GetKeyDown(KeyCode.LeftArrow) && script.isCamera == false && script.isRotate == false)
-			{
-				//falseで右回転
-				script.SetTop(script.nowTop, false);
-				StartCoroutine(MoveR());
-				script.operations(-1);
-			}
+			////==========================
+			////　Z軸で右にステージが90度傾く
+			////==========================
+			//if (Input.GetKeyDown(KeyCode.LeftArrow) && script.isCamera == false && script.isRotate == false)
+			//{
+			//	//falseで右回転
+			//	script.SetTop(script.nowTop, false);
+			//	StartCoroutine(MoveR());
+			//	script.operations(-1);
+			//}
             //==========================
             //　Y軸で左にステージが90度傾く
             //==========================

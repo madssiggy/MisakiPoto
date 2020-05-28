@@ -146,6 +146,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5789176077204874572}
     m_Modifications:
+    - target: {fileID: -3183516485786485584, guid: 95b63ae1ea533044db85a7ab2cfa882c,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9127983617640645576, guid: 95b63ae1ea533044db85a7ab2cfa882c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9127983617640645578, guid: 95b63ae1ea533044db85a7ab2cfa882c,
         type: 3}
       propertyPath: BigExplosion
@@ -153,6 +163,11 @@ PrefabInstance:
       objectReference: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
         type: 3}
     - target: {fileID: 9127983617640645578, guid: 95b63ae1ea533044db85a7ab2cfa882c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9127983617640645579, guid: 95b63ae1ea533044db85a7ab2cfa882c,
         type: 3}
       propertyPath: m_Enabled
       value: 1
